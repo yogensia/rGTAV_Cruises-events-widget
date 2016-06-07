@@ -1,17 +1,19 @@
 // ==UserScript==
 // @name         GTAV_Cruises Events Magic
-// @namespace    https://github.com/JustinHowe/userscripts/
-// @version      1.89
+// @namespace    https://github.com/yogensia/rGTAV_Cruises-events-widget
+// @version      6.0
 // @description  Events block for GTAV_Cruises
-// @author       Syntaximus
+// @author       Justin Howe, Yogensia & qlimax5000
 // @match        https://www.reddit.com/r/GTAV_Cruises
 // @match        https://www.reddit.com/r/gtav_cruises
 // @match        https://www.reddit.com/r/Gtav_cruises
 // @match        https://www.reddit.com/r/GTAV_Cruises/*
 // @match        https://www.reddit.com/r/gtav_cruises/*
 // @match        https://www.reddit.com/r/Gtav_cruises/*
-// @grant        none
-// @require      https://github.com/JustinHowe/userscripts/raw/master/jstz.min.js
+// @grant        GM_getResourceURL
+// @require      https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/jstz.min.js
+// @resource     eventsCSS https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/event-module.css
+// @resource     backgroundIMG https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/background.jpg
 // ==/UserScript==
 
 // Event Title Format: [Region] | [Date] | [Title] | [GMT] | [Time]
@@ -30,20 +32,15 @@ var goodEvents = [];
 var goodEventsCounter = 0;
 var badEventsCounter = 0;
 var badEventUrl = [];
-var events, epochNow;
+var events = [];
+var eventsURL = [];
+var epochNow;
 var updateCounter = 0;
 var finishedCounter = 0;
+var noEvents = false;
 
 // Comment to enable console logging.
 console.log = function() {}
-
-// Image Preload
-function preload(arrayOfImages) {
-	$(arrayOfImages).each(function(){
-		$('<img/>')[0].src = this;
-	});
-}
-preload(['https://raw.githubusercontent.com/yogensia/userscripts/master/background.jpg']);
 
 function toTitleCase(str) {
 	return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
@@ -154,23 +151,24 @@ function checkFinished() {
 			finishedCounter++;
 		}
 	}
-    
-    var newHeaderCounter = goodEvents.length - finishedCounter;
+
+	var newHeaderCounter = goodEvents.length - finishedCounter;
 
 	if (finishedCounter != 0) {
 		console.log(finishedCounter + " Events Finished, Changing Header to " + newHeaderCounter + " Events");
 		$("#eventsHeader").text(newHeaderCounter + ' Cruises Found');
 	}
-    
-    if (finishedCounter == goodEvents.length) {
-         $("#eventsHeader").text("It's Lonely Around Here...");
-         $("#topBodyText").text("");
+
+	if (finishedCounter == goodEvents.length) {
+		noEvents = true;
+		 $("#eventsHeader").text("It's Lonely Around Here...");
+		 $("#topBodyText").text("");
 		 $("#eventsContent").replaceWith('<div id="eventsContent"><p align="center"><strong><span style="color:#48a948; font-size:150%">No Cruises Found.</span> <br /><br /><span style="color:#48a948; font-size:100%">Won\'t you liven things up a bit and create one?</span></strong></p></div>');
-    }
-    
-    if (newHeaderCounter == 1) {
-        $("#eventsHeader").text(newHeaderCounter + ' Cruise Found');
-    }
+	}
+
+	if ((newHeaderCounter == 1) && !noEvents) {
+		$("#eventsHeader").text(newHeaderCounter + ' Cruise Found');
+	}
 }
 
 function getBadDate(badDate) {
@@ -224,36 +222,32 @@ $(window).load(function(){
 	var currentTimezone = jstzTimezone.name();
 	var currentLocation = currentTimezone.split("/");
 	currentLocation = currentLocation[1].replace(/\_/g, "+");
-	var upcomingEventsLink = "https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options";
+
+	// use GreaseMonkey API to get CSS and images
+	var eventModuleCSSRes = GM_getResourceURL("eventsCSS");
+	var backgroundRes     = GM_getResourceURL("backgroundIMG");
 
 	var eventOpenSansCSS = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700italic,700" rel="stylesheet" type="text/css">';
-	var eventModuleCSS = '<link rel="stylesheet" type="text/css" href="https://rawgit.com/yogensia/userscripts/master/event-module.css" media="all">';
-	var eventAttendanceCSS = '<link rel="stylesheet" type="text/css" href="https://rawgit.com/yogensia/userscripts/master/event-attendance.css" media="all">';
-	var eventModuleHTML = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="' + upcomingEventsLink + '" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br />Report widget bugs to <a title="All your base are belong to PapaSyntax" href="https://www.reddit.com/user/PapaSyntax/" target="_blank">PapaSyntax</a></strong></div></blockquote></div>';
+	var eventModuleCSS   = '<link rel="stylesheet" type="text/css" href="'+eventModuleCSSRes+'" media="all">';
+	var eventModuleCSS2  = '<style type="text/css">.side .md .event-block{background-image:url('+backgroundRes+')}</style>';
+	var eventModuleHTML  = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br /></strong></div></blockquote></div>';
 
-	$("head").append(eventOpenSansCSS + eventModuleCSS + eventAttendanceCSS);
+	$("head").append(eventOpenSansCSS + eventModuleCSS + eventModuleCSS2);
 	$(".side .md").prepend(eventModuleHTML);
 
-	var countdownHref;
-	var iframe = document.createElement('iframe');
-	iframe.frameBorder=0;
-	iframe.width="0px";
-	iframe.height="0px";
-	iframe.id="eventsiFrame";
-	iframe.setAttribute("src", upcomingEventsLink);
-	$("div.footer-parent").append(iframe);
+	var upcomingEventsJSON = $.getJSON("https://www.reddit.com/r/GTAV_Cruises/search.json?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all", function() {
 
-	// Run everything after iFrame load.
-	$("#eventsiFrame").load(function(){
-		var eventsString = "";
+		// Get events from JSON response
+		for (var i = upcomingEventsJSON["responseJSON"]["data"]["children"].length - 1; i >= 0; i--) {
+			events[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["title"];
+			eventsURL[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["url"];
+		};
 
-		// Get events from iframe
-		events = $("#eventsiFrame").contents().find("header.search-result-header > span").filter(function() { return ($(this).text() === 'Event') }).next();
 		console.log("Events Found: " + events.length);
 
 		// Do initial format check and store found events
 		for (var j = 0; j < events.length; j++) {
-			var tempEvent = events[j].innerHTML;
+			var tempEvent = events[j];
 			tempEvent = tempEvent.replace(/[^\|]/g, "").length;
 			if (tempEvent == 4) {
 				goodEvents[goodEventsCounter] = events[j];
@@ -261,7 +255,7 @@ $(window).load(function(){
 			} else {
 				badEventsCounter++;
 				var badEventIndex = badEventsCounter - 1;
-				badEventUrl[badEventIndex] = [$(events[j]).text(), $(events[j]).attr('href')];
+				badEventUrl[badEventIndex] = [events[j], eventsURL[j]];
 			}
 		}
 
@@ -283,28 +277,28 @@ $(window).load(function(){
 		console.log("Bad Events Found: " + badEventsCounter);
 
 		if (goodEvents.length < 1) {
-            $("#eventsHeader").text("It's Lonely Around Here...");
-            $("#topBodyText").text("");
+			$("#eventsHeader").text("It's Lonely Around Here...");
+			$("#topBodyText").text("");
 			$("#eventsContent").replaceWith('<div id="eventsContent"><p align="center"><strong><span style="color:#48a948; font-size:150%">No Cruises Found.</span> <br /><br /><span style="color:#48a948; font-size:100%">Won\'t you liven things up a bit and create one?</span></strong></p></div>');
 		} else {
-            if (goodEvents.length == 1) {
-                $("#eventsHeader").text(goodEvents.length + ' Cruise Found');
-            } else {
-                $("#eventsHeader").text(goodEvents.length + ' Cruises Found');
-            }
+			if (goodEvents.length == 1) {
+				$("#eventsHeader").text(goodEvents.length + ' Cruise Found');
+			} else {
+				$("#eventsHeader").text(goodEvents.length + ' Cruises Found');
+			}
 			continueLoading = true;
 		}
 
 		// Date and time conversion wizardry
 		if (continueLoading) {
 			for (var i=0; i < goodEvents.length; i++) {
-				var eventString = goodEvents[i].innerHTML;
+				var eventString = goodEvents[i];
 				var wellFormedEvent = eventString.replace(/[^\|]/g, "").length;
 				if (wellFormedEvent == 4) {
 					eventString = eventString.replace(/\[/g, "");
 					eventString = eventString.replace(/\]/g, "");
 					console.log("Event String: " + eventString);
-					var href = $(goodEvents[i]).attr('href');
+					var href = eventsURL[i];
 					var eventParts = eventString.split("|");
 					var region = eventParts[0];
 
@@ -323,14 +317,19 @@ $(window).load(function(){
 							month = parseInt(date[0], 10);
 						}
 
-						year = date[2];
-						var yearFirstChar = year.charAt(0);
+						if (!date[2]) {
+							year = new Date().getFullYear();
+						} else {
+							year = date[2];
+							var yearFirstChar = year.charAt(0);
 
-						if (yearFirstChar != "2") {
-							year = "20" + year;
+							if (yearFirstChar != "2") {
+								year = "20" + year;
+							}
+							year = parseInt(year, 10);
 						}
 
-						year = parseInt(year, 10);
+
 
 						var monthCurrentEpoch = Date.now();
 						var monthAheadEpoch = (monthCurrentEpoch + 2678400000)/1000;
@@ -404,29 +403,107 @@ $(window).load(function(){
 
 					var timezone = eventParts[3];
 					zones[i] = timezone;
-					if (timezone.toLowerCase().indexOf("pst") >= 0) {
-						timezone = "UTC-8";
+
+					//Get daylight savings time epochs
+					var dayDSTStart;
+					var monthDSTStart;
+					var dayDSTStop;
+					var monthDSTStop;
+
+					if (year == 2015) {
+						dayDSTStart = 8;
+						monthDSTStart = 3;
+						dayDSTStop = 1;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("pdt") >= 0) {
-						timezone = "UTC-7";
+
+					if (year == 2016) {
+						dayDSTStart = 13;
+						monthDSTStart = 3;
+						dayDSTStop = 6;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("est") >= 0) {
-						timezone = "UTC-5";
+
+					if (year == 2017) {
+						dayDSTStart = 12;
+						monthDSTStart = 3;
+						dayDSTStop = 5;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("edt") >= 0) {
-						timezone = "UTC-4";
+
+					if (year == 2018) {
+						dayDSTStart = 11;
+						monthDSTStart = 3;
+						dayDSTStop = 4;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("cst") >= 0) {
-						timezone = "UTC-6";
+
+					if (year == 2019) {
+						dayDSTStart = 10;
+						monthDSTStart = 3;
+						dayDSTStop = 3;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("cdt") >= 0) {
-						timezone = "UTC-5";
+
+					if (year == 2020) {
+						dayDSTStart = 8;
+						monthDSTStart = 3;
+						dayDSTStop = 1;
+						monthDSTStop = 11;
 					}
-					if (timezone.toLowerCase().indexOf("aest") >= 0) {
-						timezone = "UTC+10";
+
+					var epochDSTStart;
+					var epochDSTStop;
+					epochNow = Date.now();
+					console.log("Epoch Now: " + epochNow);
+
+					if ((timezone.toLowerCase().indexOf("pst") >= 0) || (timezone.toLowerCase().indexOf("pdt") >= 0)) {
+						epochDSTStart = Date.UTC(year,monthDSTStart-1,dayDSTStart,09,00);
+						epochDSTStop = Date.UTC(year,monthDSTStop-1,dayDSTStop,09,00);
+						console.log("Epoch DST Start: " + epochDSTStart);
+						console.log("Epoch DST Stop: " + epochDSTStop);
+						if ((epochNow >= epochDSTStart) && (epochNow <= epochDSTStop)) {
+							timezone = "UTC-7";
+						} else {
+							timezone = "UTC-8";
+						}
+						console.log("Timezone Converted: ")
 					}
-					if (timezone.toLowerCase().indexOf("aedt") >= 0) {
-						timezone = "UTC+11";
+
+					if ((timezone.toLowerCase().indexOf("edt") >= 0) || (timezone.toLowerCase().indexOf("est") >= 0)) {
+						epochDSTStart = Date.UTC(year,monthDSTStart-1,dayDSTStart,12,00);
+						epochDSTStop = Date.UTC(year,monthDSTStop-1,dayDSTStop,12,00);
+						console.log("Epoch DST Start: " + epochDSTStart);
+						console.log("Epoch DST Stop: " + epochDSTStop);
+						if ((epochNow >= epochDSTStart) && (epochNow <= epochDSTStop)) {
+							timezone = "UTC-4";
+						} else {
+							timezone = "UTC-5";
+						}
+					}
+
+					if ((timezone.toLowerCase().indexOf("cdt") >= 0) || (timezone.toLowerCase().indexOf("cst") >= 0)) {
+						epochDSTStart = Date.UTC(year,monthDSTStart-1,dayDSTStart,11,00);
+						epochDSTStop = Date.UTC(year,monthDSTStop-1,dayDSTStop,11,00);
+						console.log("Epoch DST Start: " + epochDSTStart);
+						console.log("Epoch DST Stop: " + epochDSTStop);
+						if ((epochNow >= epochDSTStart) && (epochNow <= epochDSTStop)) {
+							timezone = "UTC-5";
+						} else {
+							timezone = "UTC-6";
+						}
+					}
+
+					if ((timezone.toLowerCase().indexOf("aedt") >= 0) || (timezone.toLowerCase().indexOf("aest") >= 0)) {
+						epochDSTStart = Date.UTC(year,monthDSTStart-1,dayDSTStart,20,00);
+						epochDSTStop = Date.UTC(year,monthDSTStop-1,dayDSTStop,20,00);
+						console.log("Epoch DST Start: " + epochDSTStart);
+						console.log("Epoch DST Stop: " + epochDSTStop);
+						if ((epochNow >= epochDSTStart) && (epochNow <= epochDSTStop)) {
+							timezone = "UTC+11";
+						} else {
+							timezone = "UTC+10";
+						}
 					}
 
 					timezone = timezone.replace(/ /g, "");
@@ -534,5 +611,5 @@ $(window).load(function(){
 
 			setInterval(refreshTimer, 30000);
 		}
-	})
-})
+	});
+});
