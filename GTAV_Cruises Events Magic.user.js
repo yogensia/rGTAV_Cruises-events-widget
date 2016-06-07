@@ -11,9 +11,9 @@
 // @match        https://www.reddit.com/r/gtav_cruises/*
 // @match        https://www.reddit.com/r/Gtav_cruises/*
 // @grant        GM_getResourceURL
-// @require      https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/jstz.min.js
-// @resource     eventsCSS https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/event-module.css
-// @resource     backgroundIMG https://raw.githubusercontent.com/yogensia/GTAV_Cruises_Events/master/background.jpg
+// @require      https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/jstz.min.js
+// @resource     eventsCSS https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/event-module.css
+// @resource     backgroundIMG https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/background.jpg
 // ==/UserScript==
 
 // Event Title Format: [Region] | [Date] | [Title] | [GMT] | [Time]
