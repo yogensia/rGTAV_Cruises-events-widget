@@ -7,7 +7,7 @@ Tampermonkey/Greasemonkey userscript that lists upcoming, in progress and recent
 
 1. First install **[Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)** (Google Chrome) or **[Greasemonkey](https://addons.mozilla.org/en-us/firefox/addon/greasemonkey/)** (Firefox).
 
-2. Then **[click here to open the script](https://github.com/qlimax5000/GTAV_Cruises_Events/raw/master/GTAV_Cruises%20Events%20Magic.user.js)** and click the `install` button.
+2. Then **[click here to open the script](https://github.com/yogensia/rGTAV_Cruises-events-widget/raw/master/GTAV_Cruises%20Events%20Magic.user.js)** and click the `install` button.
 
 That's it! Just reload the subreddit page and you'll see the cruises/events box appear on the sidebar after a couple of seconds.
 
