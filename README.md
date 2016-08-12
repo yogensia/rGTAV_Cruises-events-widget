@@ -52,17 +52,17 @@ That's it! Just reload the subreddit page and you'll see the cruises/events box 
 * The script does have other fixes to attempt to resolve human formatting errors, but plase follow these guideline to minimize possible issues. **The most important thing is to always use day/month/year for your date.**
 
 
-## How it works
+## What happens under the hood
 
 For those who are interested, the script does the following (and ONLY the following):
 
-1. Load our upcoming events via search page JSON request.
+1. Fetch event data via [reddit's search page JSON request](https://www.reddit.com/r/GTAV_Cruises/search.json?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all).
 
 2. Parse through the event titles and urls.
 
 3. For each event found, break up the title line for all necessary information, then perform calculations on the dates/times/etc to convert the event time(s) and date(s) to true UTC time.
 
-4. Compares the future epoch of that UTC time to the current UTC epoch, which creates a difference, and uses that as the countdown.
+4. Compares the future epoch of that UTC time to the current UTC epoch, which creates a difference, and uses that as the countdown. Countdowns are updated once per minute.
 
 
 ## Credits

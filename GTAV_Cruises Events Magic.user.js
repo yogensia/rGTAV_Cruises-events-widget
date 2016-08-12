@@ -609,7 +609,7 @@ $(window).load(function(){
 			refreshTimer();
 			checkFinished();
 
-			setInterval(refreshTimer, 30000);
+			setInterval(refreshTimer, 60000);
 		}
 	});
 });
