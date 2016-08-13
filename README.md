@@ -77,3 +77,4 @@ For those who are interested, the script does the following (and ONLY the follow
 Previous versions didn't have a changelog so this changelog refers to updates done after forking from [https://github.com/qlimax5000/GTAV_Cruises_Events](https://github.com/qlimax5000/GTAV_Cruises_Events).
 
 * **v6.0:** Heavily optimized loading of data and resources: Dependencies are now loaded/stored locally by Greasemonkey/Tampermonkey. Event data is now loaded via JSON instead of using iframes, which is a lot faster.
+* **v6.1.0:** Adding support for Forza Cruise Events.

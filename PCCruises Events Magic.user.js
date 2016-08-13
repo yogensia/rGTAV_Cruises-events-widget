@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PCCruises Events Magic
 // @namespace    https://github.com/yogensia/rGTAV_Cruises-events-widget
-// @version      1.0.0
+// @version      6.1.0
 // @description  Events block for GTAV_Cruises
 // @author       Justin Howe, Yogensia, qlimax5000 & Johninatoooor
 // @match        https://www.reddit.com/r/GTAV_Cruises
@@ -41,6 +41,7 @@ var badEventsCounter = 0;
 var badEventUrl = [];
 var events = [];
 var eventsURL = [];
+var eventsGame = [];
 var epochNow;
 var updateCounter = 0;
 var finishedCounter = 0;
@@ -237,7 +238,7 @@ $(window).load(function(){
 	var eventOpenSansCSS = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700italic,700" rel="stylesheet" type="text/css">';
 	var eventModuleCSS   = '<link rel="stylesheet" type="text/css" href="'+eventModuleCSSRes+'" media="all">';
 	var eventModuleCSS2  = '<style type="text/css">.side .md .event-block{background-image:url('+backgroundRes+')}</style>';
-	var eventModuleHTML  = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br /></strong></div></blockquote></div>';
+	var eventModuleHTML  = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"><div id="eventsGTAV"><h4><a href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">GTAV Cruises</a></h4></div><div id="eventsForza"><div id="eventsGTAV"><h4><a href="https://www.reddit.com/r/ForzaCruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">Forza Cruises</a></h4></div></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br /></strong></div></blockquote></div>';
 
 	$("head").append(eventOpenSansCSS + eventModuleCSS + eventModuleCSS2);
 	$(".side .md").prepend(eventModuleHTML);
@@ -246,8 +247,9 @@ $(window).load(function(){
 
 		// Get events from JSON response
 		for (var i = upcomingEventsJSON["responseJSON"]["data"]["children"].length - 1; i >= 0; i--) {
-			events[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["title"];
-			eventsURL[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["url"];
+			events[i]     = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["title"];
+			eventsURL[i]  = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["url"];
+			eventsGame[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["subreddit"];
 		};
 
 		console.log("Events Found: " + events.length);
@@ -598,20 +600,23 @@ $(window).load(function(){
 						}
 						localDate = localDayString + " " + localMonth + " " + localDay + " @ " + localTimeHr + ":" + localTimeMin + "" + amPm;
 						console.log(localDate);
-						eventData[i] = [epochFuture[i], '<div id="event-block-' + i + '" class="event-block"><p class="event-title"><a title="Link to: ' + title + '" href="' + href + '">' + title + '</a></p><p id="timer' + i + '" class="event-timer"></p><p class="event-local-date">' + localDate + '</p><a class="block-link" a title="Link to: ' + title + '" href="' + href + '"></a></div>'];
+						eventData[i] = [epochFuture[i], '<div id="event-block-' + i + '" class="event-block subreddit-' + eventsGame[i] + '"><p class="event-title"><a title="Link to: ' + title + '" href="' + href + '">' + title + '</a></p><p id="timer' + i + '" class="event-timer"></p><p class="event-local-date">' + localDate + '</p><a class="block-link" a title="Link to: ' + title + '" href="' + href + '"></a></div>'];
 					} else {
-						eventData[i] = [9999999999, '<div id="event-block-' + i + '" class="event-block"><p class="event-title"><a title="No Countdown Timer - Bad Date - Should be day/month/year. err_code:id10t" href="' + href + '">' + title + '</a></p><p id="timer' + i + '" class="event-timer"></p><p class="event-local-date">' + localDate + '</p><a class="block-link" a title="No Countdown Timer - Bad Date - Should be day/month/year. err_code:id10t" href="' + href + '"></a></div>'];
+						eventData[i] = [9999999999, '<div id="event-block-' + i + '" class="event-block subreddit-' + eventsGame[i] + '"><p class="event-title"><a title="No Countdown Timer - Bad Date - Should be day/month/year. err_code:id10t" href="' + href + '">' + title + '</a></p><p id="timer' + i + '" class="event-timer"></p><p class="event-local-date">' + localDate + '</p><a class="block-link" a title="No Countdown Timer - Bad Date - Should be day/month/year. err_code:id10t" href="' + href + '"></a></div>'];
 					}
 				}
 			}
 
 			eventData.sort(function(a,b) {
-				return b[0]-a[0]
+				return b[0]-a[0];
 			});
 
 			for (var n = 0; n < goodEvents.length; n++) {
 				$("#eventsContent").prepend(eventData[n][1]);
 			}
+
+			$(".subreddit-GTAV_Cruises").appendTo("#eventsGTAV");
+			$(".subreddit-ForzaCruises").appendTo("#eventsForza");
 
 			refreshTimer();
 			checkFinished();

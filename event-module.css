@@ -41,6 +41,27 @@
 }
 
 
+/* Game Headers */
+#eventsContent h4 {
+	margin: 12px 0 6px;
+}
+
+#eventsContent h4 a {
+	background: #da3c3c;
+	border-radius: 3px;
+	color: #fff;
+	display: block;
+	font-size: 12px;
+	padding: 6px 0;
+	text-transform: uppercase;
+}
+
+#eventsContent h4 a:hover {
+	background: #f16315;
+	text-decoration: none;
+}
+
+
 /* Event block common styles */
 .side .md .event-block {
 	background: #1977b8;
