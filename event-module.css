@@ -41,12 +41,23 @@
 }
 
 
-/* Game Headers */
-#eventsContent h4 {
-	margin: 12px 0 6px;
+/* Headers */
+#eventsHeader {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
-#eventsContent h4 a {
+#topBodyText {
+	margin-bottom: 0!important;
+}
+
+#eventsContent > div > span {
+	display: block;
+	padding: 6px 0 6px;
+}
+
+#eventsContent > div > span a {
 	background: #0B2D4F;
 	border-radius: 3px;
 	color: #fff;
@@ -58,7 +69,7 @@
 	text-transform: uppercase;
 }
 
-#eventsContent h4 a:hover {
+#eventsContent > div > span a:hover {
 	background: #0f3f6f;
 	text-decoration: none;
 }
