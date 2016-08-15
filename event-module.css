@@ -12,7 +12,7 @@
 
 .side .md blockquote.events-module h3 {
 	height: 36px;
-	margin-bottom: 6px;
+	margin: 0 0 6px;
 	padding: 0;
 	position: relative;
 }
