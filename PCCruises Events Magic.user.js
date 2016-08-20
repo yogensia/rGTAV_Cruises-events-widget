@@ -238,7 +238,7 @@ $(window).load(function(){
 	var eventOpenSansCSS = '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700italic,700" rel="stylesheet" type="text/css">';
 	var eventModuleCSS   = '<link rel="stylesheet" type="text/css" href="'+eventModuleCSSRes+'" media="all">';
 	var eventModuleCSS2  = '<style type="text/css">.side .md .event-block{background-image:url('+backgroundRes+')}</style>';
-	var eventModuleHTML  = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"><div id="eventsGTAV"><span><a href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">GTAV Cruises</a></span></div><div id="eventsForza"><span><a href="https://www.reddit.com/r/ForzaCruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">Forza Cruises</a></span></div></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br /></strong></div></blockquote></div>';
+	var eventModuleHTML  = '<div id="eventsWidget"><blockquote class="events-module" style="text-align:center"><h3><a id="eventsHeader" href="https://www.reddit.com/r/GTAV_Cruises+ForzaCruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options" style="color:#fff">Cruises loading...</a></h3><p id="topBodyText"><strong>Countdown timers auto-update</strong></p><div id="eventsContent"><div id="eventsGTAV"><span><a href="https://www.reddit.com/r/GTAV_Cruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">GTAV Cruises</a></span></div><div id="eventsForza"><span><a href="https://www.reddit.com/r/ForzaCruises/search?q=flair%3A%22events%22&restrict_sr=on&sort=new&t=all#res-hide-options">Forza Cruises</a></span></div></div><div id="footer"><strong>Local time detected as ' + currentLocation.replace(/\+/g, " ") + '<br /></strong></div></blockquote></div>';
 
 	$("head").append(eventOpenSansCSS + eventModuleCSS + eventModuleCSS2);
 	$(".side .md").prepend(eventModuleHTML);
@@ -615,11 +615,34 @@ $(window).load(function(){
 				$("#eventsContent").prepend(eventData[n][1]);
 			}
 
+			// move events into their respective game section
 			$(".subreddit-GTAV_Cruises").appendTo("#eventsGTAV");
 			$(".subreddit-ForzaCruises").appendTo("#eventsForza");
 
+			// if a game has no events, hide its header (disabled)
+			/*
+			$("#eventsContent > div").each(function() {
+				if ($(this).find('span').siblings().length === 0) {
+					$(this).find('span').hide()
+				}
+			});
+			*/
+
 			refreshTimer();
 			checkFinished();
+
+			// add number of events to each game section header
+			$("#eventsContent > div").each(function() {
+				var eventsLength = $(this).find('div:not(.state-finished)').length;
+				var thisGame = $(this).find('span a').text();
+				if (eventsLength === 0) {
+					$(this).find('span a').text(thisGame + ': No events');
+				} else if (eventsLength == 1) {
+					$(this).find('span a').text(thisGame + ': 1 event');
+				} else {
+					$(this).find('span a').text(thisGame + ': '+ eventsLength +' events');
+				}
+			});
 
 			setInterval(refreshTimer, 60000);
 		}
