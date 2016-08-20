@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PCCruises Events Magic
 // @namespace    https://github.com/yogensia/rGTAV_Cruises-events-widget
-// @version      6.1.0
+// @version      6.1.1
 // @description  Events block for GTAV_Cruises
 // @author       Justin Howe, Yogensia, qlimax5000 & Johninatoooor
 // @match        https://www.reddit.com/r/GTAV_Cruises
@@ -10,13 +10,14 @@
 // @match        https://www.reddit.com/r/GTAV_Cruises/*
 // @match        https://www.reddit.com/r/gtav_cruises/*
 // @match        https://www.reddit.com/r/Gtav_cruises/*
-// @match        https://www.reddit.com/r/ForzaCruises/
+// @match        https://www.reddit.com/r/ForzaCruises
+// @match        https://www.reddit.com/r/FORZACruises
 // @match        https://www.reddit.com/r/forzacruises
 // @match        https://www.reddit.com/r/Forzacruises
+// @match        https://www.reddit.com/r/ForzaCruises/*
 // @match        https://www.reddit.com/r/FORZACruises/*
 // @match        https://www.reddit.com/r/forzacruises/*
 // @match        https://www.reddit.com/r/Forzacruises/*
-// @match        https://www.reddit.com/r/ForzaCruises/*
 // @grant        GM_getResourceURL
 // @require      https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/jstz.min.js
 // @resource     eventsCSS https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/event-module.css
