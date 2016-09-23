@@ -79,3 +79,4 @@ Previous versions didn't have a changelog so this changelog refers to updates do
 - **v6.0:** Heavily optimized loading of data and resources: Dependencies are now loaded/stored locally by Greasemonkey/Tampermonkey. Event data is now loaded via JSON instead of using iframes, which is a lot faster.
 - **v6.1.0:** Adding support for Forza Cruise Events.
 - **v6.1.1:** URL match tweaks for reddit, number of events per game added to header, and minor fixes.
+- **v6.1.2:** Fixed jQuery loading in Firefox/Greasemonkey.

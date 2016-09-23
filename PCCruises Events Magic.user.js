@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PCCruises Events Magic
 // @namespace    https://github.com/yogensia/rGTAV_Cruises-events-widget
-// @version      6.1.1
+// @version      6.1.2
 // @description  Events block for GTAV_Cruises
 // @author       Justin Howe, Yogensia, qlimax5000 & Johninatoooor
 // @match        https://www.reddit.com/r/GTAV_Cruises
@@ -19,6 +19,7 @@
 // @match        https://www.reddit.com/r/forzacruises/*
 // @match        https://www.reddit.com/r/Forzacruises/*
 // @grant        GM_getResourceURL
+// @require      https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/jquery.min.js
 // @require      https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/jstz.min.js
 // @resource     eventsCSS https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/event-module.css
 // @resource     backgroundIMG https://raw.githubusercontent.com/yogensia/rGTAV_Cruises-events-widget/master/background.jpg
@@ -51,6 +52,9 @@ var noEvents = false;
 // Comment to enable console logging.
 // console.log = function() {}
 
+// Get jQuery version
+console.log('jQuery version', $.fn.jquery);
+
 function toTitleCase(str) {
 	return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
@@ -67,15 +71,17 @@ function timerUpdate(n) {
 		d = (((countdowns[n]-s)/60 - m)/60 - h)/24;
 		var txt;
 		var inProgress = false;
+        var textDays;
+        var textHours;
 		if (d == 1) {
-			var textDays = " Day, ";
+			textDays = " Day, ";
 		} else {
-			var textDays = " Days, ";
+			textDays = " Days, ";
 		}
 		if (h == 1) {
-			var textHours = " Hr";
+			textHours = " Hr";
 		} else {
-			var textHours = " Hrs";
+			textHours = " Hrs";
 		}
 		// DAYS HRS MIN
 		if (d > 0) {
@@ -83,40 +89,40 @@ function timerUpdate(n) {
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// HRS MIN
-		if ((d == 0) && (h > 0) && (m > 0)) {
+		if ((d === 0) && (h > 0) && (m > 0)) {
 			txt = "Starts in " + h + textHours + ", " + m + " Min";
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// HRS
-		if ((d == 0) && (h > 0) && (m == 0)) {
+		if ((d === 0) && (h > 0) && (m === 0)) {
 			txt = "Starts in " + h + textHours;
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// MIN
-		if ((d == 0) &&(h == 0) && (m > 0)) {
+		if ((d === 0) &&(h === 0) && (m > 0)) {
 			txt = "Starts in " + m + " Min";
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// DAYS MIN
-		if ((d > 0) &&(h == 0) && (m > 0)) {
+		if ((d > 0) &&(h === 0) && (m > 0)) {
 			txt = "Starts in " + d + textDays + m + " Min";
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// DAYS HRS
-		if ((d > 0) &&(h > 0) && (m == 0)) {
+		if ((d > 0) &&(h > 0) && (m === 0)) {
 			txt = "Starts in " + d + textDays + h + textHours;
 			$("#event-block-" + n).addClass("state-upcoming");
 		}
 		// IN PROGRESS
-		if ((d == 0) && ((h >= -1) && (h <= 0)) && (m <= 0)) {
+		if ((d === 0) && ((h >= -1) && (h <= 0)) && (m <= 0)) {
 			txt = 'Just Started';
-			if ((h == 0) && (m < 0)) {
+			if ((h === 0) && (m < 0)) {
 				m = m.toString().replace(/\-/, "");
 				txt = 'Started ' + m + " Min ago";
 			}
 			if (h == -1) {
 				h = h.toString().replace(/\-/, "");
-				if (m == 0) {
+				if (m === 0) {
 					txt = 'Started ' + h + " Hr ago";
 				} else {
 					m = m.toString().replace(/\-/, "");
@@ -163,7 +169,7 @@ function checkFinished() {
 
 	var newHeaderCounter = goodEvents.length - finishedCounter;
 
-	if (finishedCounter != 0) {
+	if (finishedCounter !== 0) {
 		console.log(finishedCounter + " Events Finished, Changing Header to " + newHeaderCounter + " Events");
 		$("#eventsHeader").text(newHeaderCounter + ' Cruises Found');
 	}
@@ -182,40 +188,40 @@ function checkFinished() {
 
 function getBadDate(badDate) {
 	if (badDate.indexOf("jan") >= 0) {
-		month = 1
+		month = 1;
 	}
 	if (badDate.indexOf("feb") >= 0) {
-		month = 2
+		month = 2;
 	}
 	if (badDate.indexOf("mar") >= 0) {
-		month = 3
+		month = 3;
 	}
 	if (badDate.indexOf("apr") >= 0) {
-		month = 4
+		month = 4;
 	}
 	if (badDate.indexOf("may") >= 0) {
-		month = 5
+		month = 5;
 	}
 	if (badDate.indexOf("jun") >= 0) {
-		month = 6
+		month = 6;
 	}
 	if (badDate.indexOf("jul") >= 0) {
-		month = 7
+		month = 7;
 	}
 	if (badDate.indexOf("aug") >= 0) {
-		month = 8
+		month = 8;
 	}
 	if (badDate.indexOf("sep") >= 0) {
-		month = 9
+		month = 9;
 	}
 	if (badDate.indexOf("oct") >= 0) {
-		month = 10
+		month = 10;
 	}
 	if (badDate.indexOf("nov") >= 0) {
-		month = 11
+		month = 11;
 	}
 	if (badDate.indexOf("dec") >= 0) {
-		month = 12
+		month = 12;
 	}
 
 	year = badDate.match(/\d{4}/);
@@ -224,8 +230,8 @@ function getBadDate(badDate) {
 	day = parseInt(day, 10);
 }
 
-// Set up the iFrame for all upcoming events after page load.
-$(window).load(function(){
+// wait for dom ready event
+$(function() {
 
 	var jstzTimezone = jstz.determine();
 	var currentTimezone = jstzTimezone.name();
@@ -251,7 +257,7 @@ $(window).load(function(){
 			events[i]     = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["title"];
 			eventsURL[i]  = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["url"];
 			eventsGame[i] = upcomingEventsJSON["responseJSON"]["data"]["children"][i]["data"]["subreddit"];
-		};
+		}
 
 		console.log("Events Found: " + events.length);
 
@@ -477,7 +483,7 @@ $(window).load(function(){
 						} else {
 							timezone = "UTC-8";
 						}
-						console.log("Timezone Converted: ")
+						console.log("Timezone Converted: ");
 					}
 
 					if ((timezone.toLowerCase().indexOf("edt") >= 0) || (timezone.toLowerCase().indexOf("est") >= 0)) {
@@ -593,7 +599,7 @@ $(window).load(function(){
 						if (localTimeHr == 12) {
 							amPm = " PM";
 						}
-						if (localTimeHr == 0) {
+						if (localTimeHr === 0) {
 							localTimeHr = "12";
 						}
 						if (localTimeMin < 10) {
