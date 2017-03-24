@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PCCruises Events Magic
 // @namespace    https://github.com/yogensia/rGTAV_Cruises-events-widget
-// @version      6.1.2
+// @version      6.1.3
 // @description  Events block for GTAV_Cruises
 // @author       Justin Howe, Yogensia, qlimax5000 & Johninatoooor
 // @match        https://www.reddit.com/r/GTAV_Cruises
@@ -400,6 +400,7 @@ $(function() {
 							console.log("Converted Time " + eventParts[4] + " To: " + time);
 						}
 					}
+					time = time.replace(/\./g, ":");
 					time = time.split(":");
 					times[i] = eventParts[4];
 					var hour = time[0];

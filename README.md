@@ -80,3 +80,4 @@ Previous versions didn't have a changelog so this changelog refers to updates do
 - **v6.1.0:** Adding support for Forza Cruise Events.
 - **v6.1.1:** URL match tweaks for reddit, number of events per game added to header, and minor fixes.
 - **v6.1.2:** Fixed jQuery loading in Firefox/Greasemonkey.
+- **v6.1.3:** Fixed crash when an event has a time format of "HH.MM".
